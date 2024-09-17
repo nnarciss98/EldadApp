@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "eldadmedia")
+@Table(name = "eldadmedia", uniqueConstraints = @UniqueConstraint(columnNames = "ytUrl"))
 public class EldadMedia {
 
     @Id
@@ -15,8 +15,12 @@ public class EldadMedia {
     private EldadMediaType eldadMediaType;
 
     private String ytTitle;
+    @Column(unique = true)
     private String ytUrl;
     private String ytUploadDate;
+
+    @OneToOne(mappedBy = "recommendedBy", cascade = CascadeType.ALL)
+    private EldadRecommendations recommendations;
 
     public UUID getId() {
         return id;
@@ -56,5 +60,13 @@ public class EldadMedia {
 
     public void setYtUploadDate(String ytUploadDate) {
         this.ytUploadDate = ytUploadDate;
+    }
+
+    public EldadRecommendations getRecommendations() {
+        return recommendations;
+    }
+
+    public void setRecommendations(EldadRecommendations recommendations) {
+        this.recommendations = recommendations;
     }
 }

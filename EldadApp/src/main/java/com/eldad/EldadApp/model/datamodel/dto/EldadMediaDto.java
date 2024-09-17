@@ -2,14 +2,14 @@ package com.eldad.EldadApp.model.datamodel.dto;
 
 import com.eldad.EldadApp.model.datamodel.EldadMediaType;
 
-import java.util.List;
-
 public class EldadMediaDto {
     private EldadMediaType eldadMediaType;
     private String ytTitle;
     private String ytUrl;
     private String ytUploadDate;
+    private EldadRecommendationsDto recommendations;
 
+    // Getters and Setters
     public EldadMediaType getEldadMediaType() {
         return eldadMediaType;
     }
@@ -40,5 +40,13 @@ public class EldadMediaDto {
 
     public void setYtUploadDate(String ytUploadDate) {
         this.ytUploadDate = ytUploadDate;
+    }
+
+    public EldadRecommendationsDto getRecommendations() {
+        return recommendations;
+    }
+
+    public void setRecommendations(EldadRecommendationsDto recommendations) {
+        this.recommendations = recommendations;
     }
 }
