@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/media")
@@ -24,9 +23,9 @@ public class EldadMediaController {
         return eldadMediaService.getAllMedia();
     }
 
-    @GetMapping("/{ytUrl}")
+    @GetMapping("/{ytId}")
     public ResponseEntity<EldadMedia> getMediaByYtUrl(@PathVariable String ytUrl) {
-        Optional<EldadMedia> media = eldadMediaService.getMediaByYtUrl(ytUrl);
+        Optional<EldadMedia> media = eldadMediaService.getMediaByYtId(ytUrl);
         return media.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -64,12 +63,12 @@ public class EldadMediaController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{mediaYtUrl}/recommendations")
+    @PostMapping("/{ytVideoCode}/recommendations")
     public ResponseEntity<EldadMedia> addRecommendation(
-            @PathVariable String mediaYtUrl,
+            @PathVariable String ytVideoCode,
             @RequestBody String recommendationYtUrl) {
         try {
-            EldadMedia updatedMedia = eldadMediaService.addRecommendation(mediaYtUrl, recommendationYtUrl);
+            EldadMedia updatedMedia = eldadMediaService.addRecommendation(ytVideoCode, recommendationYtUrl);
             return ResponseEntity.ok(updatedMedia);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null);
@@ -80,7 +79,7 @@ public class EldadMediaController {
         EldadMedia media = new EldadMedia();
         media.setEldadMediaType(dto.getEldadMediaType());
         media.setYtTitle(dto.getYtTitle());
-        media.setYtUrl(dto.getYtUrl());
+        media.setYtId(dto.getYtId());
         media.setYtUploadDate(dto.getYtUploadDate());
         return media;
     }
@@ -89,7 +88,7 @@ public class EldadMediaController {
         EldadMediaDto dto = new EldadMediaDto();
         dto.setEldadMediaType(media.getEldadMediaType());
         dto.setYtTitle(media.getYtTitle());
-        dto.setYtUrl(media.getYtUrl());
+        dto.setYtId(media.getYtId());
         dto.setYtUploadDate(media.getYtUploadDate());
         return dto;
     }

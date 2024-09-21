@@ -7,6 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface EldadMediaRepository extends JpaRepository<EldadMedia, UUID> {
-    Optional<EldadMedia> findByYtUrl(String ytUrl);
+    Optional<EldadMedia> findByYtId(String ytId);
     void deleteByYtUrl(String ytUrl);
 }

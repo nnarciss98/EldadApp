@@ -25,12 +25,12 @@ public class EldadMediaService {
         return eldadMediaRepository.findAll();
     }
 
-    public Optional<EldadMedia> getMediaByYtUrl(String ytUrl) {
-        return eldadMediaRepository.findByYtUrl(ytUrl);
-    }
-
     public Optional<EldadMedia> getMediaById(UUID id) {
         return eldadMediaRepository.findById(id);
+    }
+
+    public Optional<EldadMedia> getMediaByYtId(String ytId){
+        return eldadMediaRepository.findByYtId(ytId);
     }
 
     @Transactional
@@ -57,13 +57,13 @@ public class EldadMediaService {
     }
 
     @Transactional
-    public EldadMedia updateMedia(String ytUrl, EldadMedia newEldadMedia) {
-        Optional<EldadMedia> optionalMedia = eldadMediaRepository.findByYtUrl(ytUrl);
+    public EldadMedia updateMedia(String ytId, EldadMedia newEldadMedia) {
+        Optional<EldadMedia> optionalMedia = eldadMediaRepository.findByYtId(ytId);
         if (optionalMedia.isPresent()) {
             EldadMedia existingMedia = optionalMedia.get();
             existingMedia.setEldadMediaType(newEldadMedia.getEldadMediaType());
             existingMedia.setYtTitle(newEldadMedia.getYtTitle());
-            existingMedia.setYtUrl(newEldadMedia.getYtUrl());
+            existingMedia.setYtId(newEldadMedia.getYtId());
             existingMedia.setYtUploadDate(newEldadMedia.getYtUploadDate());
 
             // Handle recommendations if they exist
@@ -76,24 +76,24 @@ public class EldadMediaService {
 
             return eldadMediaRepository.save(existingMedia);
         } else {
-            throw new RuntimeException("Media not found with id: " + ytUrl);
+            throw new RuntimeException("Media not found with id: " + ytId);
         }
     }
 
     @Transactional
-    public EldadMedia addRecommendation(String mediaYtUrl, String recommendationYtUrl) {
+    public EldadMedia addRecommendation(String ytId, String recommendationYtId) {
         // Get the original media by ytUrl
-        Optional<EldadMedia> optionalMedia = eldadMediaRepository.findByYtUrl(mediaYtUrl);
+        Optional<EldadMedia> optionalMedia = eldadMediaRepository.findByYtId(ytId);
         if (optionalMedia.isEmpty()) {
-            throw new RuntimeException("Original media not found with ytUrl: " + mediaYtUrl);
+            throw new RuntimeException("Original media not found with ytVideoCode: " + ytId);
         }
 
         EldadMedia originalMedia = optionalMedia.get();
 
         // Check if the recommended media with the provided ytUrl exists
-        Optional<EldadMedia> recommendedMediaOptional = eldadMediaRepository.findByYtUrl(recommendationYtUrl);
+        Optional<EldadMedia> recommendedMediaOptional = eldadMediaRepository.findByYtId(recommendationYtId);
         if (recommendedMediaOptional.isEmpty()) {
-            throw new RuntimeException("Recommended media not found with ytUrl: " + recommendationYtUrl);
+            throw new RuntimeException("Recommended media not found with recommendationYtId: " + recommendationYtId);
         }
 
         EldadMedia recommendedMedia = recommendedMediaOptional.get();
@@ -117,7 +117,7 @@ public class EldadMediaService {
         EldadMediaDto dto = new EldadMediaDto();
         dto.setEldadMediaType(media.getEldadMediaType());
         dto.setYtTitle(media.getYtTitle());
-        dto.setYtUrl(media.getYtUrl());
+        dto.setYtId(media.getYtId());
         dto.setYtUploadDate(media.getYtUploadDate());
         return dto;
     }
@@ -126,7 +126,7 @@ public class EldadMediaService {
         EldadMedia media = new EldadMedia();
         media.setEldadMediaType(dto.getEldadMediaType());
         media.setYtTitle(dto.getYtTitle());
-        media.setYtUrl(dto.getYtUrl());
+        media.setYtId(dto.getYtId());
         media.setYtUploadDate(dto.getYtUploadDate());
         return media;
     }
