@@ -2,7 +2,6 @@ package com.eldad.EldadApp.controller.service;
 
 import com.eldad.EldadApp.model.datamodel.EldadMedia;
 import com.eldad.EldadApp.model.datamodel.EldadRecommendations;
-import com.eldad.EldadApp.model.datamodel.dto.EldadMediaDto;
 import com.eldad.EldadApp.model.repository.EldadMediaRepository;
 import com.eldad.EldadApp.model.repository.EldadRecommendationsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,14 @@ import java.util.UUID;
 @Service
 public class EldadMediaService {
 
+    private final EldadMediaRepository eldadMediaRepository;
+    private final EldadRecommendationsRepository eldadRecommendationsRepository;
+
     @Autowired
-    private EldadMediaRepository eldadMediaRepository;
-    @Autowired
-    private EldadRecommendationsRepository eldadRecommendationsRepository;
+    public EldadMediaService(EldadMediaRepository eldadMediaRepository, EldadRecommendationsRepository eldadRecommendationsRepository) {
+        this.eldadMediaRepository = eldadMediaRepository;
+        this.eldadRecommendationsRepository = eldadRecommendationsRepository;
+    }
 
     public List<EldadMedia> getAllMedia() {
         return eldadMediaRepository.findAll();
@@ -52,8 +55,8 @@ public class EldadMediaService {
     }
 
     @Transactional
-    public void deleteMediaByYtUrl(String ytUrl) {
-        eldadMediaRepository.deleteByYtUrl(ytUrl);
+    public void deleteMediaByYtId(String ytId) {
+        eldadMediaRepository.deleteByYtId(ytId);
     }
 
     @Transactional
@@ -112,24 +115,4 @@ public class EldadMediaService {
         // Save and return the updated media
         return eldadMediaRepository.save(originalMedia);
     }
-
-    public EldadMediaDto convertToDto(EldadMedia media) {
-        EldadMediaDto dto = new EldadMediaDto();
-        dto.setEldadMediaType(media.getEldadMediaType());
-        dto.setYtTitle(media.getYtTitle());
-        dto.setYtId(media.getYtId());
-        dto.setYtUploadDate(media.getYtUploadDate());
-        return dto;
-    }
-
-    public EldadMedia convertToEntity(EldadMediaDto dto) {
-        EldadMedia media = new EldadMedia();
-        media.setEldadMediaType(dto.getEldadMediaType());
-        media.setYtTitle(dto.getYtTitle());
-        media.setYtId(dto.getYtId());
-        media.setYtUploadDate(dto.getYtUploadDate());
-        return media;
-    }
-
-
 }

@@ -2,6 +2,7 @@ package com.eldad.EldadApp.controller.api;
 
 import com.eldad.EldadApp.controller.service.EldadMediaService;
 import com.eldad.EldadApp.model.datamodel.EldadMedia;
+import com.eldad.EldadApp.model.datamodel.EldadMediaMapper;
 import com.eldad.EldadApp.model.datamodel.EldadRecommendations;
 import com.eldad.EldadApp.model.datamodel.dto.EldadMediaDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,14 @@ import java.util.Optional;
 @RequestMapping("/api/media")
 public class EldadMediaController {
 
+    private final EldadMediaService eldadMediaService;
+    private final EldadMediaMapper eldadMediaMapper;
+
     @Autowired
-    private EldadMediaService eldadMediaService;
+    public EldadMediaController(EldadMediaMapper eldadMediaMapper, EldadMediaService eldadMediaService) {
+        this.eldadMediaMapper = eldadMediaMapper;
+        this.eldadMediaService = eldadMediaService;
+    }
 
     @GetMapping
     public List<EldadMedia> getAllMedia() {
@@ -24,15 +31,15 @@ public class EldadMediaController {
     }
 
     @GetMapping("/{ytId}")
-    public ResponseEntity<EldadMedia> getMediaByYtUrl(@PathVariable String ytUrl) {
-        Optional<EldadMedia> media = eldadMediaService.getMediaByYtId(ytUrl);
+    public ResponseEntity<EldadMedia> getMediaByY(@PathVariable String ytId) {
+        Optional<EldadMedia> media = eldadMediaService.getMediaByYtId(ytId);
         return media.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping(consumes = "application/json")
     public ResponseEntity<EldadMedia> createMedia(@RequestBody EldadMediaDto eldadMediaDto) {
 
-        EldadMedia eldadMedia = convertToEntity(eldadMediaDto);
+        EldadMedia eldadMedia = eldadMediaMapper.toEntity(eldadMediaDto);
 
         if (eldadMediaDto.getRecommendations() != null) {
             EldadRecommendations recommendations = new EldadRecommendations();
@@ -44,53 +51,34 @@ public class EldadMediaController {
         return ResponseEntity.ok(savedMedia);
     }
 
-    @PutMapping("/{ytUrl}")
+    @PutMapping("/{ytId}")
     public ResponseEntity<EldadMedia> updateMedia(
-            @PathVariable String ytUrl,
+            @PathVariable String ytId,
             @RequestBody EldadMediaDto eldadMediaDto) {
         try {
-            EldadMedia eldadMedia = eldadMediaService.convertToEntity(eldadMediaDto);
-            EldadMedia updatedMedia = eldadMediaService.updateMedia(ytUrl, eldadMedia);
+            EldadMedia eldadMedia = eldadMediaMapper.toEntity(eldadMediaDto);
+            EldadMedia updatedMedia = eldadMediaService.updateMedia(ytId, eldadMedia);
             return ResponseEntity.ok(updatedMedia);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/{ytUrl}")
-    public ResponseEntity<Void> deleteMediaByYtUrl(@PathVariable String ytUrl) {
-        eldadMediaService.deleteMediaByYtUrl(ytUrl);
+    @DeleteMapping("/{ytId}")
+    public ResponseEntity<Void> deleteMediaByYtId(@PathVariable String ytId) {
+        eldadMediaService.deleteMediaByYtId(ytId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{ytVideoCode}/recommendations")
     public ResponseEntity<EldadMedia> addRecommendation(
             @PathVariable String ytVideoCode,
-            @RequestBody String recommendationYtUrl) {
+            @RequestBody String recommendationYtId) {
         try {
-            EldadMedia updatedMedia = eldadMediaService.addRecommendation(ytVideoCode, recommendationYtUrl);
+            EldadMedia updatedMedia = eldadMediaService.addRecommendation(ytVideoCode, recommendationYtId);
             return ResponseEntity.ok(updatedMedia);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
-    public EldadMedia convertToEntity(EldadMediaDto dto) {
-        EldadMedia media = new EldadMedia();
-        media.setEldadMediaType(dto.getEldadMediaType());
-        media.setYtTitle(dto.getYtTitle());
-        media.setYtId(dto.getYtId());
-        media.setYtUploadDate(dto.getYtUploadDate());
-        return media;
-    }
-
-    public EldadMediaDto convertToDto(EldadMedia media) {
-        EldadMediaDto dto = new EldadMediaDto();
-        dto.setEldadMediaType(media.getEldadMediaType());
-        dto.setYtTitle(media.getYtTitle());
-        dto.setYtId(media.getYtId());
-        dto.setYtUploadDate(media.getYtUploadDate());
-        return dto;
-    }
-
 }
