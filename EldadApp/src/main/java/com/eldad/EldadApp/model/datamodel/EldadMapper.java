@@ -1,5 +1,6 @@
 package com.eldad.EldadApp.model.datamodel;
 
+import com.eldad.EldadApp.model.datamodel.dto.EldadAjutorareDto;
 import com.eldad.EldadApp.model.datamodel.dto.EldadMediaDto;
 import com.eldad.EldadApp.model.datamodel.dto.EldadRecommendationsDto;
 import com.eldad.EldadApp.model.repository.EldadMediaRepository;
@@ -10,16 +11,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class EldadMediaMapper {
+public class EldadMapper {
 
     private final EldadMediaRepository eldadMediaRepository;
 
     @Autowired
-    public EldadMediaMapper(EldadMediaRepository eldadMediaRepository) {
+    public EldadMapper(EldadMediaRepository eldadMediaRepository) {
         this.eldadMediaRepository = eldadMediaRepository;
     }
 
-    public EldadMedia toEntity(EldadMediaDto dto) {
+    public EldadMedia eldadMediaToEntity(EldadMediaDto dto) {
         EldadMedia media = new EldadMedia();
         media.setEldadMediaType(dto.getEldadMediaType());
         media.setYtTitle(dto.getYtTitle());
@@ -39,7 +40,7 @@ public class EldadMediaMapper {
         return media;
     }
 
-    public EldadMediaDto toDto(EldadMedia media) {
+    public EldadMediaDto eldadMediaToDto(EldadMedia media) {
         EldadMediaDto dto = new EldadMediaDto();
         dto.setId(media.getId());
         dto.setEldadMediaType(media.getEldadMediaType());
@@ -77,10 +78,28 @@ public class EldadMediaMapper {
 
         if (recommendations.getRecommendations() != null) {
             dto.setRecommendations(recommendations.getRecommendations().stream()
-                    .map(this::toDto)
+                    .map(this::eldadMediaToDto)
                     .collect(Collectors.toList())
             );
         }
         return dto;
+    }
+
+    public EldadAjutorareDto eldadAjutorareToDto(EldadAjutorare entity) {
+        EldadAjutorareDto dto = new EldadAjutorareDto();
+        dto.setId(entity.getId());
+        dto.setTitle(entity.getTitle());
+        dto.setContent(entity.getContent());
+        dto.setCreatedDate(entity.getCreatedDate());
+        return dto;
+    }
+
+    public EldadAjutorare eldadAjutorareToEntity(EldadAjutorareDto dto) {
+        EldadAjutorare entity = new EldadAjutorare();
+        entity.setId(dto.getId());
+        entity.setTitle(dto.getTitle());
+        entity.setContent(dto.getContent());
+        entity.setCreatedDate(dto.getCreatedDate());
+        return entity;
     }
 }
