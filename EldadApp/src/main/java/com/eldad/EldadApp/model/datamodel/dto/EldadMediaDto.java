@@ -2,14 +2,26 @@ package com.eldad.EldadApp.model.datamodel.dto;
 
 import com.eldad.EldadApp.model.datamodel.EldadMediaType;
 
+import java.util.List;
+import java.util.UUID;
+
 public class EldadMediaDto {
+    private UUID id;
     private EldadMediaType eldadMediaType;
     private String ytTitle;
     private String ytId;
     private String ytUploadDate;
-    private EldadRecommendationsDto recommendations;
+    private List<String> recommendations;
+    private EldadRecommendationsDto recommendationsDto;
 
-    // Getters and Setters
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public EldadMediaType getEldadMediaType() {
         return eldadMediaType;
     }
@@ -26,6 +38,14 @@ public class EldadMediaDto {
         this.ytTitle = ytTitle;
     }
 
+    public String getYtId() {
+        return ytId;
+    }
+
+    public void setYtId(String ytId) {
+        this.ytId = ytId;
+    }
+
     public String getYtUploadDate() {
         return ytUploadDate;
     }
@@ -34,19 +54,19 @@ public class EldadMediaDto {
         this.ytUploadDate = ytUploadDate;
     }
 
-    public EldadRecommendationsDto getRecommendations() {
+    public List<String> getRecommendations() {
         return recommendations;
     }
 
-    public void setRecommendations(EldadRecommendationsDto recommendations) {
+    public void setRecommendations(List<String> recommendations) {
         this.recommendations = recommendations;
     }
 
-    public String getYtId() {
-        return ytId;
+    public EldadRecommendationsDto getRecommendationsDto() {
+        return recommendationsDto;
     }
 
-    public void setYtId(String ytId) {
-        this.ytId = ytId;
+    public void setRecommendationsDto(EldadRecommendationsDto recommendationsDto) {
+        this.recommendationsDto = recommendationsDto;
     }
 }
