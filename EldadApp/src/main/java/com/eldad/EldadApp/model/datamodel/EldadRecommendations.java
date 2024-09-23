@@ -1,5 +1,6 @@
 package com.eldad.EldadApp.model.datamodel;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.UUID;
@@ -12,13 +13,14 @@ public class EldadRecommendations {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @OneToOne
-    @JoinColumn(name = "recommended_by_id")
-    private EldadMedia recommendedBy;
-
     @OneToMany
     @JoinColumn(name = "recommendation_id")
     private List<EldadMedia> recommendations;
+
+    @OneToOne
+    @JoinColumn(name = "recommended_by_id")
+    @JsonBackReference
+    private EldadMedia recommendedBy;
 
     // Getters and Setters
     public UUID getId() {

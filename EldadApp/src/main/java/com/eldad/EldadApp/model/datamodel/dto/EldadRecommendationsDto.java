@@ -1,29 +1,35 @@
 package com.eldad.EldadApp.model.datamodel.dto;
 
-import com.eldad.EldadApp.model.datamodel.EldadMedia;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-
 import java.util.List;
+import java.util.UUID;
 
 public class EldadRecommendationsDto {
-    private EldadMedia recommendedBy;
+    private UUID id;
+    private UUID recommendedById;
+    private List<EldadMediaDto> recommendations; // List of media recommendations as DTOs
 
-    private List<EldadMedia> recommendations;
-
-    public EldadMedia getRecommendedBy() {
-        return recommendedBy;
+    // Getters and Setters
+    public UUID getId() {
+        return id;
     }
 
-    public void setRecommendedBy(EldadMedia recommendedBy) {
-        this.recommendedBy = recommendedBy;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-    public List<EldadMedia> getRecommendations() {
+    public UUID getRecommendedById() {
+        return recommendedById;
+    }
+
+    public void setRecommendedById(UUID recommendedById) {
+        this.recommendedById = recommendedById;
+    }
+
+    public List<EldadMediaDto> getRecommendations() {
         return recommendations;
     }
 
-    public void setRecommendations(List<EldadMedia> recommendations) {
+    public void setRecommendations(List<EldadMediaDto> recommendations) {
         this.recommendations = recommendations;
     }
 }

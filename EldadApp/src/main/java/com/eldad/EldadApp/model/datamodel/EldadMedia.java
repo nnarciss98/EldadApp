@@ -1,5 +1,6 @@
 package com.eldad.EldadApp.model.datamodel;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public class EldadMedia {
     private String ytUploadDate;
 
     @OneToOne(mappedBy = "recommendedBy", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private EldadRecommendations recommendations;
 
     public UUID getId() {
