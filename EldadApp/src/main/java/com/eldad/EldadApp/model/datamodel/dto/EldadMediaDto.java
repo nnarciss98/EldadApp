@@ -11,10 +11,9 @@ public class EldadMediaDto {
     private String ytTitle;
     private String ytId;
     private String ytUploadDate;
-    private List<String> recommendations; // Include recommendations as a nested DTO
-    private EldadRecommendationsDto recommendationsDto; // Include recommendations as a nested DTO
+    private List<String> recommendations;
+    private EldadRecommendationsDto recommendationsDto;
 
-    // Getters and Setters
     public UUID getId() {
         return id;
     }

@@ -1,6 +1,5 @@
 package com.eldad.EldadApp.model.datamodel;
 
-import com.eldad.EldadApp.controller.service.EldadMediaService;
 import com.eldad.EldadApp.model.datamodel.dto.EldadMediaDto;
 import com.eldad.EldadApp.model.datamodel.dto.EldadRecommendationsDto;
 import com.eldad.EldadApp.model.repository.EldadMediaRepository;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component

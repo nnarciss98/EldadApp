@@ -6,9 +6,8 @@ import java.util.UUID;
 public class EldadRecommendationsDto {
     private UUID id;
     private UUID recommendedById;
-    private List<EldadMediaDto> recommendations; // List of media recommendations as DTOs
+    private List<EldadMediaDto> recommendations;
 
-    // Getters and Setters
     public UUID getId() {
         return id;
     }

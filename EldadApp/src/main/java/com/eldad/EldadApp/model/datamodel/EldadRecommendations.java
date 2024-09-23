@@ -22,7 +22,6 @@ public class EldadRecommendations {
     @JsonBackReference
     private EldadMedia recommendedBy;
 
-    // Getters and Setters
     public UUID getId() {
         return id;
     }
