@@ -1,7 +1,7 @@
 package com.eldad.EldadApp.controller.service;
 
 import com.eldad.EldadApp.model.datamodel.EldadMedia;
-import com.eldad.EldadApp.model.datamodel.EldadMediaMapper;
+import com.eldad.EldadApp.model.datamodel.EldadMapper;
 import com.eldad.EldadApp.model.datamodel.EldadRecommendations;
 import com.eldad.EldadApp.model.datamodel.dto.EldadMediaDto;
 import com.eldad.EldadApp.model.repository.EldadMediaRepository;
@@ -19,31 +19,30 @@ public class EldadMediaService {
 
     private final EldadMediaRepository eldadMediaRepository;
     private final EldadRecommendationsRepository eldadRecommendationsRepository;
-    private final EldadMediaMapper eldadMediaMapper;
+    private final EldadMapper eldadMapper;
 
     @Autowired
-    public EldadMediaService(EldadMediaRepository eldadMediaRepository, EldadRecommendationsRepository eldadRecommendationsRepository, EldadMediaMapper eldadMediaMapper) {
+    public EldadMediaService(EldadMediaRepository eldadMediaRepository, EldadRecommendationsRepository eldadRecommendationsRepository, EldadMapper eldadMapper) {
         this.eldadMediaRepository = eldadMediaRepository;
         this.eldadRecommendationsRepository = eldadRecommendationsRepository;
-        this.eldadMediaMapper = eldadMediaMapper;
+        this.eldadMapper = eldadMapper;
     }
 
     public List<EldadMediaDto> getAllMedia() {
         return eldadMediaRepository.findAll().stream()
-                .map(eldadMediaMapper::toDto)
+                .map(eldadMapper::eldadMediaToDto)
                 .collect(Collectors.toList());
     }
 
     public Optional<EldadMediaDto> getMediaByYtId(String ytId) {
-        return eldadMediaRepository.findByYtId(ytId).map(eldadMediaMapper::toDto);
+        return eldadMediaRepository.findByYtId(ytId).map(eldadMapper::eldadMediaToDto);
     }
 
     @Transactional
     public EldadMediaDto saveMedia(EldadMediaDto eldadMediaDto) {
-        EldadMedia eldadMedia = eldadMediaMapper.toEntity(eldadMediaDto);
+        EldadMedia eldadMedia = eldadMapper.eldadMediaToEntity(eldadMediaDto);
         EldadMedia savedMedia = eldadMediaRepository.save(eldadMedia);
-        System.out.println("Saved Media ID: " + savedMedia.getId()); // Log the generated ID
-        return eldadMediaMapper.toDto(savedMedia);
+        return eldadMapper.eldadMediaToDto(savedMedia);
     }
 
     @Transactional
@@ -57,13 +56,13 @@ public class EldadMediaService {
             existingMedia.setYtUploadDate(newEldadMediaDto.getYtUploadDate());
 
             if (newEldadMediaDto.getRecommendations() != null) {
-                EldadRecommendations newRecommendations = eldadMediaMapper.toRecommendationsEntity(newEldadMediaDto.getRecommendations());
+                EldadRecommendations newRecommendations = eldadMapper.toRecommendationsEntity(newEldadMediaDto.getRecommendations());
                 newRecommendations.setRecommendedBy(existingMedia);
                 eldadRecommendationsRepository.save(newRecommendations);
                 existingMedia.setRecommendations(newRecommendations);
             }
 
-            return eldadMediaMapper.toDto(eldadMediaRepository.save(existingMedia));
+            return eldadMapper.eldadMediaToDto(eldadMediaRepository.save(existingMedia));
         } else {
             throw new RuntimeException("Media not found with id: " + ytId);
         }
@@ -91,7 +90,7 @@ public class EldadMediaService {
         originalMedia.setRecommendations(recommendations);
         eldadRecommendationsRepository.save(recommendations);
 
-        return eldadMediaMapper.toDto(eldadMediaRepository.save(originalMedia));
+        return eldadMapper.eldadMediaToDto(eldadMediaRepository.save(originalMedia));
     }
 
     @Transactional
