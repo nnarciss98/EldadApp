@@ -20,6 +20,11 @@ public class EldadMediaController {
         this.eldadMediaService = eldadMediaService;
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<String> test(){
+        return ResponseEntity.ok("Test good");
+    }
+
     @GetMapping
     public List<EldadMediaDto> getAllMedia() {
         return eldadMediaService.getAllMedia();
