@@ -1,3 +1,8 @@
+paypal:
+  client-id: AbutZYOfI1_Uf4uhW_e7blxmOq-M-DVUICldLtHn8d57GwDc4_5W6krDVlzS0Mwhrz6Yct1UsXQw8KZN
+  client-secret: EKJNfmjyKbQ84IETOED3yw_nBA7K_t6lE9N3Hpak2V_PtPvUJbtCUt97tW17wY-hmmKze_mOOnw8NcZr
+  mode: sandbox #Use 'sandbox' for testing and 'live' for production
+
 # Database connection settings
 spring:
   datasource:
