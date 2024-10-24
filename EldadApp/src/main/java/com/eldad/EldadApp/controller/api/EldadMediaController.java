@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/media")
+@RequestMapping("/api/v1/media")
 public class EldadMediaController {
 
     private final EldadMediaService eldadMediaService;
