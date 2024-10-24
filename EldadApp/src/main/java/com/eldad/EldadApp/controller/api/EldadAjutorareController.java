@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/ajutorare")
+@RequestMapping("/api/v1/ajutorare")
 public class EldadAjutorareController {
 
     private final EldadAjutorareService eldadAjutorareService;
