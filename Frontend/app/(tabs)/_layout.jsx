@@ -2,6 +2,8 @@ import { Text, View, Image } from "react-native";
 import { Tabs } from "expo-router";
 import { icons } from "../../constants";
 
+import { BlurView } from "expo-blur";
+
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
     <View
@@ -32,14 +34,14 @@ const TabsLayout = () => {
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
-          tabBarActiveTintColor: "#FFA001",
+          tabBarActiveTintColor: "#F5B841",
           tabBarInactiveTintColor: "#B7B7B7",
           tabBarStyle: {
-            backgroundColor: "#FFF",
+            backgroundColor: "#18273E",
             paddingTop: 15,
             borderTopWidth: 0.5,
-            borderTopColor: "#B7B7B7",
-            height: 84,
+            borderTopColor: "#8FA1B3",
+            height: 80,
           },
         }}
       >
@@ -61,7 +63,7 @@ const TabsLayout = () => {
         <Tabs.Screen
           name="music"
           options={{
-            title: "Muzica",
+            title: "Music",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
@@ -95,7 +97,7 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.play}
+                icon={icons.podcast}
                 color={color}
                 name="Podcast"
                 focused={focused}

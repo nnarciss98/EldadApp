@@ -10,7 +10,7 @@ import rightArrow from "../assets/icons/right-arrow.png";
 import logout from "../assets/icons/logout.png";
 import eyeHide from "../assets/icons/eye-hide.png";
 import eye from "../assets/icons/eye.png";
-import play from "../assets/icons/play.png";
+import podcast from "../assets/icons/podcast.png";
 import donate from "../assets/icons/donate.png";
 import kids from "../assets/icons/kids.png";
 import music from "../assets/icons/music.png";
@@ -18,7 +18,7 @@ import logo from "../assets/icons/eldad-logo.png";
 import book from "../assets/icons/book.png";
 
 export default {
-  play,
+  podcast,
   bookmark,
   home,
   plus,

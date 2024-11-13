@@ -23,17 +23,17 @@ const Home = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 ">
+    <SafeAreaView className="flex-1 bg-primary">
       {/* Container for Welcome Section */}
       <View className="z-10">
         {/* Welcome Section */}
         <View className="px-4  space-y-1 ">
           <View className="flex justify-between items-start flex-row">
             <View>
-              <Text className="font-pmedium text-sm text-gray-800">
+              <Text className="font-pmedium text-sm text-gray">
                 Bine ai venit,
               </Text>
-              <Text className="text-2xl font-psemibold text-black">Raul</Text>
+              <Text className="text-2xl font-psemibold text-white">Raul</Text>
             </View>
             <View className="justify-center items-center mt-1.5">
               <Image
@@ -58,26 +58,26 @@ const Home = () => {
         <View className="">
           {/* Vision Section */}
           <View className="mb-5 px-5">
-            <Text className="text-2xl font-psemibold text-black text-center">
+            <Text className="text-2xl font-psemibold text-white text-center">
               Oameni pentru oameni... Suflete pentru Dumnezeu...
             </Text>
           </View>
 
-          <View className="rounded-xl  border-[0.5px] border-[#B7B7B7] py-5 mx-5 mb-5 px-5 bg-white">
+          <View className="py-5 mx-5 mb-5 ">
             <Image
               source={images.eldadteam}
               resizeMode="cover"
               className="w-full h-56 rounded-lg mb-4"
             />
-            <Text className="text-xl font-psemibold text-center mb-2 text-black-200">
+            <Text className="text-xl font-psemibold text-center mb-2 text-white">
               Cine si ce est <Text style={{ color: "#FFA001" }}>Eldad</Text>
             </Text>
             <Image
               source={images.path}
-              className="absolute w-[136px] h-[12px] top-[280px] right-[50px] "
+              className="absolute w-[136px] h-[12px] top-[281px] right-[50px] "
               resizeMode="contain"
             />
-            <Text className="text-base text-gray-800 mb-2 font-pregular">
+            <Text className="text-base text-white mb-2 font-pregular">
               Grupul Eldad Spania a fost înființat în mai 2008 de Cristian și
               Mariana Drăgușin, împreună cu Emanuel Dincă și Alexandru
               Sighiartău, având ca scop răspândirea mesajului Evangheliei prin
@@ -96,11 +96,11 @@ const Home = () => {
             />
           </View>
 
-          <View className="rounded-xl border-[0.5px]  border-[#B7B7B7] py-5 mx-5 px-5 bg-white">
-            <Text className="text-xl font-psemibold text-center mb-2 text-black-200">
+          <View className=" py-5 mx-5 ">
+            <Text className="text-xl font-psemibold text-center mb-2 text-white">
               Viziune
             </Text>
-            <Text className="text-base text-gray-800 mb-2 font-pregular">
+            <Text className="text-base text-white mb-2 font-pregular">
               Scopul nostru este ca{" "}
               <Text style={{ color: "#FFA001" }}>MESAJUL EVANGHELIEI</Text> să
               ajungă la cât mai multe suflete prin:
@@ -123,11 +123,11 @@ const Home = () => {
           </View>
 
           {/* Donation Section */}
-          <View className="rounded-xl bg-[#242632] py-5 mx-5 my-5 px-5">
+          <View className="rounded-xl py-5 mx-5 my-5">
             <Text className="text-xl font-psemibold text-center mb-2 text-[#FFA001]">
               Doneaza
             </Text>
-            <Text className="text-base text-gray-300 mb-2 font-pregular">
+            <Text className="text-base text-white mb-2 font-pregular">
               Aceste lucrări se pot desfășura doar cu ajutorul lui Dumnezeu și
               implicarea oamenilor.
               {"\n"}

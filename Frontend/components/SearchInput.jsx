@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { router, usePathname } from "expo-router";
 import { View, TouchableOpacity, Image, TextInput, Alert } from "react-native";
 
@@ -9,12 +9,18 @@ const SearchInput = ({ initialQuery }) => {
   const [query, setQuery] = useState(initialQuery || "");
 
   return (
-    <View className="flex flex-row items-center space-x-4 w-full h-16 px-4  bg-white rounded-2xl  ">
+    <View
+      className="flex flex-row items-center space-x-4 w-full h-14 bg-transparent rounded-2xl  focus:border focus:border-secondary px-2"
+      style={{
+        borderColor: "rgba(245, 184, 65, 0.1)", // Using RGBA for border color
+        borderWidth: 1, // Border width
+      }}
+    >
       <TextInput
-        className="text-base mt-0.5 text-gray-800 flex-1 font-pregular"
+        className="text-base mt-0.5 flex-1 font-pregular text-white "
         value={query}
         placeholder="Cauta un video"
-        placeholderTextColor="#424242"
+        placeholderTextColor="#fff"
         onChangeText={(e) => setQuery(e)}
       />
 
@@ -29,6 +35,7 @@ const SearchInput = ({ initialQuery }) => {
           if (pathname.startsWith("/search")) router.setParams({ query });
           else router.push(`/search/${query}`);
         }}
+        className="p-2 bg-secondary rounded-full" // Optional styling for the button
       >
         <Image source={icons.search} className="w-5 h-5" resizeMode="contain" />
       </TouchableOpacity>
