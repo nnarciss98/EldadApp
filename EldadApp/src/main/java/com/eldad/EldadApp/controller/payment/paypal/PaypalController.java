@@ -1,4 +1,4 @@
-package com.eldad.EldadApp.controller.payment;
+package com.eldad.EldadApp.controller.payment.paypal;
 
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;

@@ -2,6 +2,9 @@ package com.eldad.EldadApp.controller.api;
 
 import com.eldad.EldadApp.controller.service.EldadMediaService;
 import com.eldad.EldadApp.model.datamodel.dto.EldadMediaDto;
+import com.eldad.EldadApp.model.datamodel.dto.TestResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/media")
+@RequestMapping("/api/v1/media")
 public class EldadMediaController {
 
     private final EldadMediaService eldadMediaService;
+
+    private static final Logger LOG = LoggerFactory.getLogger(EldadMediaController.class);
 
     @Autowired
     public EldadMediaController(EldadMediaService eldadMediaService) {
@@ -21,12 +26,16 @@ public class EldadMediaController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<String> test(){
-        return ResponseEntity.ok("Test good");
+    public ResponseEntity<TestResponse> test(){
+        TestResponse test = new TestResponse();
+        test.setText("Test json work good");
+        LOG.info("Test requested");
+        return ResponseEntity.ok(test);
     }
 
     @GetMapping
     public List<EldadMediaDto> getAllMedia() {
+        LOG.info("Get all media");
         return eldadMediaService.getAllMedia();
     }
 
