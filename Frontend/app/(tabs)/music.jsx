@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   FlatList,
@@ -9,178 +9,87 @@ import {
   Modal,
   Dimensions,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { Ionicons } from "@expo/vector-icons";
-import SearchInput from "../../components/SearchInput";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { images } from "../../constants";
+import { images } from "../../constants"; // Replace with your logo or other assets
 import VideoCard from "../../components/Music/VideoCard";
-import VideoCardHorizontal from "../../components/Music/VideoCardHorizontal";
+import FavoriteVideo from "../../components/Music/FavoriteVideo";
+import CONFIG from "../../constants/config";
 
 const { width } = Dimensions.get("window");
 
-const videoData = [
-  {
-    id: "1",
-    title: "Ce minunat e Dumnezeu",
-    youtubeId: "IfPkIH_zM0w",
-    thumbnail: "https://i3.ytimg.com/vi/IfPkIH_zM0w/maxresdefault.jpg",
-    uploadDate: "12 sept. 2018",
-    artist: "Eldad & Eldad Kids",
-  },
-  {
-    id: "2",
-    title: "Se clatina lumea",
-    youtubeId: "Yun5cu4Ie0c",
-    thumbnail: "https://i3.ytimg.com/vi/Yun5cu4Ie0c/maxresdefault.jpg",
-    uploadDate: "5 août 2020",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "3",
-    title: "Ne vom aduce mereu aminte",
-    youtubeId: "VJVN8QLNIv8",
-    thumbnail: "https://i3.ytimg.com/vi/VJVN8QLNIv8/maxresdefault.jpg",
-    uploadDate: "13 mars 2020",
-    artist: "Grupul Eldad",
-  },
-  {
-    id: "4",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "5",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "6",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "7",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "8",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "9",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "10",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "11",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-];
-
-const dataVideoHorizontal = [
-  {
-    id: "1",
-    title: "Ce minunat e Dumnezeu",
-    youtubeId: "IfPkIH_zM0w",
-    thumbnail: "https://i3.ytimg.com/vi/IfPkIH_zM0w/maxresdefault.jpg",
-    uploadDate: "12 sept. 2018",
-    artist: "Eldad & Eldad Kids",
-  },
-  {
-    id: "2",
-    title: "Se clatina lumea",
-    youtubeId: "Yun5cu4Ie0c",
-    thumbnail: "https://i3.ytimg.com/vi/Yun5cu4Ie0c/maxresdefault.jpg",
-    uploadDate: "5 août 2020",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "3",
-    title: "Ne vom aduce mereu aminte",
-    youtubeId: "VJVN8QLNIv8",
-    thumbnail: "https://i3.ytimg.com/vi/VJVN8QLNIv8/maxresdefault.jpg",
-    uploadDate: "13 mars 2020",
-    artist: "Grupul Eldad",
-  },
-  {
-    id: "4",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-];
-
 const Music = () => {
+  // States to manage the video data, refreshing, loading, modal visibility, etc.
+  const [videoData, setVideoData] = useState([]); // Vertical list data
+  const [dataVideoHorizontal, setDataVideoHorizontal] = useState([]); // Horizontal list data
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentVideo, setCurrentVideo] = useState(null);
   const [playing, setPlaying] = useState(false);
   const insets = useSafeAreaInsets();
 
+  // Use the BASE_URL from the CONFIG.js file
+  const API_URL = `${CONFIG.BASE_URL}/api/v1/media`;
+
+  // Fetch data from the backend API
+  const fetchData = async () => {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error("Failed to fetch data");
+      const data = await response.json();
+
+      // Separate into vertical and horizontal data
+      setVideoData(data); // Assign all data to vertical list
+      setDataVideoHorizontal(data.slice(0, 4)); // Use a subset for horizontal list
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      alert("There was an error fetching the data. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // Call fetchData when the component mounts
+  }, []);
+
   const onRefresh = async () => {
     setRefreshing(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await fetchData();
     setRefreshing(false);
   };
 
-  // Render vertical list of music
+  const closeModal = () => {
+    setModalVisible(false);
+    setPlaying(false); // Stop playing when closing the modal
+  };
+
+  // Render vertical list of videos
   const renderVerticalItem = ({ item }) => (
     <VideoCard
-      videoTitle={item.title}
-      videoArtist={item.artist}
-      videoThumbnail={item.thumbnail}
-      uploadDate={item.uploadDate}
+      videoTitle={item.ytTitle}
+      videoArtist={item.eldadMediaType} // Display media type as artist
+      videoThumbnail={`https://img.youtube.com/vi/${item.ytId}/maxresdefault.jpg`}
+      uploadDate={item.ytUploadDate}
       onPress={() => {
-        setCurrentVideo(item);
-        setModalVisible(true);
-        setPlaying(true);
+        setCurrentVideo(item); // Set the current video to play
+        setModalVisible(true); // Show the modal with the video
+        setPlaying(true); // Start playing the video
       }}
     />
   );
 
-  // Render horizontal list of favorite music
+  // Render horizontal list of favorite videos
   const renderHorizontalItem = ({ item }) => (
-    <VideoCardHorizontal
-      videoTitle={item.title}
-      videoArtist={item.artist}
-      videoThumbnail={item.thumbnail}
-      uploadDate={item.uploadDate}
+    <FavoriteVideo
+      videoTitle={item.ytTitle}
+      videoArtist={item.eldadMediaType}
+      videoThumbnail={`https://img.youtube.com/vi/${item.ytId}/maxresdefault.jpg`}
+      uploadDate={item.ytUploadDate}
       onPress={() => {
         setCurrentVideo(item);
         setModalVisible(true);
@@ -189,16 +98,11 @@ const Music = () => {
     />
   );
 
-  // Header Component for the vertical list, including the horizontal list
+  // Header for the vertical list, including the horizontal list
   const ListHeader = () => (
     <View>
-      {/* Horizontal Video List */}
-      <View style={{ paddingHorizontal: 16 }}>
-        {/* <SearchInput /> */}
-        <Text
-          style={{ fontSize: 18, fontWeight: "600", marginBottom: 8 }}
-          className="text-gray"
-        >
+      <View className="px-4">
+        <Text className="text-lg font-psemibold text-[#F5B841] mb-2">
           Favorite
         </Text>
       </View>
@@ -210,38 +114,41 @@ const Music = () => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingLeft: 5, paddingBottom: 16 }}
       />
-      {/* Spacing between horizontal and vertical lists */}
-      <Text
-        style={{
-          fontSize: 18,
-          fontWeight: "600",
-          marginHorizontal: 16,
-          paddingBottom: 4,
-        }}
-        className="text-gray"
-      >
-        Vezi mai multe
+      <Text className="px-4 text-lg font-psemibold text-[#F5B841] mb-1">
+        Vezi mai toate
       </Text>
     </View>
   );
 
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 justify-center items-center bg-primary">
+        <ActivityIndicator size="large" color="#0000ff" />
+      </SafeAreaView>
+    );
+  }
+
+  if (videoData.length === 0) {
+    return (
+      <SafeAreaView className="flex-1 justify-center items-center bg-primary">
+        <Text>No videos available.</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingTop: insets.top }}
-      className="bg-primary"
+      style={{ paddingTop: insets.top }}
+      className="flex-1 bg-primary"
     >
-      <View className="mx-4  space-y-1 mb-2">
-        <View className="flex justify-between items-center flex-row">
-          <View>
-            <Text className="text-2xl font-psemibold text-white">Muzica</Text>
-          </View>
-          <View className="justify-center items-center mt-1.5">
-            <Image
-              source={images.logo} // Replace with your logo image URL
-              className="w-12 h-12"
-              resizeMode="cover"
-            />
-          </View>
+      <View className="mx-4 space-y-2 mb-4">
+        <View className="flex-row justify-between items-center">
+          <Text className="text-2xl font-pbold text-white">Muzica</Text>
+          <Image
+            source={images.logo} // Replace with your logo image URL
+            className="w-12 h-12"
+            resizeMode="cover"
+          />
         </View>
       </View>
       {/* Main Vertical FlatList */}
@@ -262,46 +169,16 @@ const Music = () => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}
+        onRequestClose={closeModal}
       >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              borderRadius: 10,
-              padding: 16,
-              width: width * 0.9,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 16,
-              }}
-            >
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <TouchableOpacity onPress={closeModal}>
                 <Ionicons name="arrow-back" size={24} color="black" />
               </TouchableOpacity>
               {currentVideo && (
-                <Text
-                  style={{
-                    flex: 1,
-                    fontSize: 18,
-                    fontWeight: "bold",
-                    textAlign: "center",
-                  }}
-                >
-                  {currentVideo.title}
-                </Text>
+                <Text style={styles.modalTitle}>{currentVideo.ytTitle}</Text>
               )}
               <View style={{ width: 24 }} />
             </View>
@@ -310,7 +187,7 @@ const Music = () => {
               <YoutubePlayer
                 height={(width * 9) / 16}
                 width="100%"
-                videoId={currentVideo.youtubeId}
+                videoId={currentVideo.ytId}
                 play={playing}
                 onChangeState={(state) => {
                   if (state === "ended") {
@@ -323,12 +200,12 @@ const Music = () => {
 
             {/* Video Info */}
             {currentVideo && (
-              <View>
-                <Text className="text-base font-medium text-gray-800">
-                  Artist: {currentVideo.artist}
+              <View style={styles.videoInfo}>
+                <Text style={styles.artistText}>
+                  Artist: {currentVideo.eldadMediaType}
                 </Text>
-                <Text className="text-sm text-gray-600 mt-1">
-                  Uploaded on: {currentVideo.uploadDate}
+                <Text style={styles.uploadDateText}>
+                  Uploaded on: {currentVideo.ytUploadDate}
                 </Text>
               </View>
             )}
@@ -337,6 +214,47 @@ const Music = () => {
       </Modal>
     </SafeAreaView>
   );
+};
+
+// CSS styles for the modal
+const styles = {
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay
+  },
+  modalContent: {
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 16,
+    width: "90%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    flex: 1,
+  },
+  videoInfo: {
+    marginTop: 16,
+  },
+  artistText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#333",
+  },
+  uploadDateText: {
+    fontSize: 14,
+    color: "#777",
+    marginTop: 4,
+  },
 };
 
 export default Music;
