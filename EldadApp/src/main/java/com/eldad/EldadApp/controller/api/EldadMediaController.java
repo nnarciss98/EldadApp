@@ -1,8 +1,10 @@
 package com.eldad.EldadApp.controller.api;
 
 import com.eldad.EldadApp.controller.service.EldadMediaService;
+import com.eldad.EldadApp.model.datamodel.EldadMediaType;
 import com.eldad.EldadApp.model.datamodel.dto.EldadMediaDto;
 import com.eldad.EldadApp.model.datamodel.dto.TestResponse;
+import io.jsonwebtoken.lang.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,22 @@ public class EldadMediaController {
     public List<EldadMediaDto> getAllMedia() {
         LOG.info("Get all media");
         return eldadMediaService.getAllMedia();
+    }
+
+    @GetMapping("/findAll/{type}")
+    public ResponseEntity<List<EldadMediaDto>> getAllMediaType(@PathVariable String type) {
+        try {
+            LOG.info("Get all media of type {}", type);
+            EldadMediaType eldadMediaType = EldadMediaType.valueOf(type.toUpperCase());
+            List<EldadMediaDto> mediaList = eldadMediaService.getAllMediaType(eldadMediaType);
+            return ResponseEntity.ok(mediaList);
+        } catch (IllegalArgumentException e) {
+            LOG.error("Invalid media type provided: {}", type);
+            return ResponseEntity.badRequest().body(Collections.emptyList());
+        } catch (Exception e) {
+            LOG.error("Unexpected error occurred while fetching media of type {}: {}", type, e.getMessage(), e);
+            return ResponseEntity.status(500).body(Collections.emptyList());
+        }
     }
 
     @GetMapping("/{ytId}")
