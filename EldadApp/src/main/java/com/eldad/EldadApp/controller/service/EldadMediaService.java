@@ -2,6 +2,7 @@ package com.eldad.EldadApp.controller.service;
 
 import com.eldad.EldadApp.model.datamodel.EldadMedia;
 import com.eldad.EldadApp.model.datamodel.EldadMapper;
+import com.eldad.EldadApp.model.datamodel.EldadMediaType;
 import com.eldad.EldadApp.model.datamodel.EldadRecommendations;
 import com.eldad.EldadApp.model.datamodel.dto.EldadMediaDto;
 import com.eldad.EldadApp.model.repository.EldadMediaRepository;
@@ -30,6 +31,12 @@ public class EldadMediaService {
 
     public List<EldadMediaDto> getAllMedia() {
         return eldadMediaRepository.findAll().stream()
+                .map(eldadMapper::eldadMediaToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<EldadMediaDto> getAllMediaType(EldadMediaType eldadMediaType) {
+        return eldadMediaRepository.findByEldadMediaType(eldadMediaType).stream()
                 .map(eldadMapper::eldadMediaToDto)
                 .collect(Collectors.toList());
     }
