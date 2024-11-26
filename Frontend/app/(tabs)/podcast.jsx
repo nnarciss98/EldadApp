@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
-  FlatList,
-  RefreshControl,
   Text,
   Image,
   SafeAreaView,
@@ -10,133 +8,73 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import YoutubePlayer from "react-native-youtube-iframe"; //To open a modal for reading video card
+import YoutubePlayer from "react-native-youtube-iframe";
 import { Ionicons } from "@expo/vector-icons";
-import SearchInput from "../../components/SearchInput";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 import VideoCard from "../../components/Podcast/VideoCard";
 import { images } from "../../constants";
+import CONFIG from "../../constants/config";
 
-const { width } = Dimensions.get("window"); // Get screen width
-
-const videoData = [
-  {
-    id: "1",
-    title: "...când nu vrei să mai demonstrezi nimic, Dumnezeu te poate folosi",
-    youtubeId: "awih4E1e0Og",
-    thumbnail: "https://i3.ytimg.com/vi/awih4E1e0Og/maxresdefault.jpg",
-    uploadDate: "12 sept. 2018",
-    artist: "PodCast Eldad #17",
-  },
-  {
-    id: "2",
-    title: "și Pastorii au luptele lor...",
-    youtubeId: "Qfp127c5EMk",
-    thumbnail: "https://i3.ytimg.com/vi/Qfp127c5EMk/maxresdefault.jpg",
-    uploadDate: "5 août 2020",
-    artist: "PodCast Eldad #18",
-  },
-  {
-    id: "3",
-    title:
-      "Proroci adevărați vs proroci mincinoși, Experiente de viata impreuna cu Mișu",
-    youtubeId: "cPl7yTODMuE",
-    thumbnail: "https://i3.ytimg.com/vi/cPl7yTODMuE/maxresdefault.jpg",
-    uploadDate: "13 mars 2020",
-    artist: "PodCast Eldad | #9",
-  },
-  {
-    id: "4",
-    title: "Fără picioare și fără o mână luptând pentru o viață mai bună",
-    youtubeId: "_TsT-VFk6kQ",
-    thumbnail: "https://i3.ytimg.com/vi/_TsT-VFk6kQ/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "PodCast Eldad #34",
-  },
-  {
-    id: "5",
-    title: "Când strigă un nenorocit, Domnul aude",
-    youtubeId: "ckb1co4YB14",
-    thumbnail: "https://i3.ytimg.com/vi/ckb1co4YB14/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "PodCast Eldad #48",
-  },
-  {
-    id: "6",
-    title: "Folositor până la capătul lumii",
-    youtubeId: "YRGwRgLZDc8",
-    thumbnail: "https://i3.ytimg.com/vi/YRGwRgLZDc8/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "PodCast Eldad #51",
-  },
-  {
-    id: "7",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "8",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "9",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "10",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-  {
-    id: "11",
-    title: "Sunt un bulgaras prea mic",
-    youtubeId: "n3oIP25QitU",
-    thumbnail: "https://i3.ytimg.com/vi/n3oIP25QitU/maxresdefault.jpg",
-    uploadDate: "14 mai 2021",
-    artist: "Grupul Eldad Live",
-  },
-];
+const { width } = Dimensions.get("window");
+const API_URL = `${CONFIG.BASE_URL}/api/v1/media/findAll/PODCAST`;
 
 const Podcast = () => {
+  const [podcasts, setPodcasts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentVideo, setCurrentVideo] = useState(null);
   const [playing, setPlaying] = useState(false);
 
+  // Fetch data from API
+  const fetchPodcasts = async () => {
+    try {
+      const response = await fetch(API_URL);
+      const data = await response.json();
+      const formattedData = data.map((item) => ({
+        id: item.id,
+        title: item.ytTitle,
+        youtubeId: item.ytId,
+        thumbnail: `https://i3.ytimg.com/vi/${item.ytId}/maxresdefault.jpg`,
+        uploadDate: item.ytUploadDate,
+        artist: "Podcast Eldad", // Placeholder or fetch dynamically if available
+      }));
+      setPodcasts(formattedData);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching podcasts:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPodcasts();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Loading podcasts...</Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, padding: 10 }} className="bg-primary">
-      <View className="mx-4  space-y-1 mb-2">
+      <View className="mx-4 space-y-1 mb-2">
         <View className="flex justify-between items-center flex-row">
-          <View>
-            <Text className="text-2xl font-psemibold text-white">Podcast</Text>
-          </View>
-          <View className="justify-center items-center mt-1.5">
-            <Image
-              source={images.logo} // Replace with your logo image URL
-              className="w-12 h-12"
-              resizeMode="cover"
-            />
-          </View>
+          <Text className="text-2xl font-psemibold text-white">Podcast</Text>
+          <Image
+            source={images.logo}
+            className="w-12 h-12"
+            resizeMode="cover"
+          />
         </View>
       </View>
       <ScrollView>
-        <View className="">
-          {videoData.map((item) => (
+        <View>
+          {podcasts.map((item) => (
             <View key={item.id} className="w-full px-2 my-3">
               <VideoCard
                 videoTitle={item.title}
@@ -153,7 +91,7 @@ const Podcast = () => {
           ))}
         </View>
       </ScrollView>
-      {/* Modal for Youtube Player */}
+      {/* Modal for YouTube Player */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -219,7 +157,7 @@ const Podcast = () => {
 
             {/* Video Info */}
             {currentVideo && (
-              <View className="">
+              <View>
                 <Text className="text-base font-medium text-gray-800">
                   Artist: {currentVideo.artist}
                 </Text>

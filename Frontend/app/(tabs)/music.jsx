@@ -33,7 +33,7 @@ const Music = () => {
   const insets = useSafeAreaInsets();
 
   // Use the BASE_URL from the CONFIG.js file
-  const API_URL = `${CONFIG.BASE_URL}/api/v1/media`;
+  const API_URL = `${CONFIG.BASE_URL}/api/v1/media/findAll/MUSIC`;
 
   // Fetch data from the backend API
   const fetchData = async () => {

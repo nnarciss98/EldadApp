@@ -33,13 +33,13 @@ const VideoCard = ({
   return (
     <SafeAreaView className="rounded-lg shadow-md  mb-1 overflow-hidden ">
       {/* Video Information Container */}
-      <View className="flex-row items-center justify-between py-2 px-4 ">
+      <View className="flex-row items-center justify-between py-2 px-2">
         <TouchableOpacity onPress={onPress}>
           {/* Image Container */}
           <View className="flex-row items-center ">
             <Image
               source={{ uri: videoThumbnail }}
-              className="w-16 h-16 rounded-lg"
+              className="w-20 h-20 rounded-lg"
               resizeMode="cover"
             />
 
