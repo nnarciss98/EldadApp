@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
-const VideoCardHorizontal = ({
+const FavoriteVideo = ({
   videoTitle,
   videoThumbnail,
   videoArtist,
@@ -41,4 +41,4 @@ const VideoCardHorizontal = ({
   );
 };
 
-export default VideoCardHorizontal;
+export default FavoriteVideo;

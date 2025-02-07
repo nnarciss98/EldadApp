@@ -1,7 +1,5 @@
 import {
   View,
-  FlatList,
-  RefreshControl,
   Text,
   Image,
   SafeAreaView,
@@ -9,125 +7,68 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
-import React, { useState } from "react";
-import YoutubePlayer from "react-native-youtube-iframe"; //To open a modal for reading video card
-import { Ionicons } from "@expo/vector-icons"; //Icons
-import { useSafeAreaInsets } from "react-native-safe-area-context"; //Used to render all in a safe area view for all screens
+import React, { useState, useEffect } from "react";
+import YoutubePlayer from "react-native-youtube-iframe"; // To open a modal for reading video card
+import { Ionicons } from "@expo/vector-icons"; // Icons
+import { useSafeAreaInsets } from "react-native-safe-area-context"; // Used to render all in a safe area view for all screens
 import SearchInput from "../../components/SearchInput";
 import { images } from "../../constants";
 import VideoCard from "../../components/Kids/VideoCard";
-
-const videoData = [
-  {
-    id: "1",
-    title: "Multe motive",
-    youtubeId: "t5QQNQTUWnc",
-    thumbnail: "https://i3.ytimg.com/vi/t5QQNQTUWnc/maxresdefault.jpg",
-    uploadDate: " 21 juin 2024",
-    artist: "Eldad KIDS | Misiunea Eldad",
-  },
-  {
-    id: "2",
-    title: "Dis de dimineață",
-    youtubeId: "7oADCYC6tl8",
-    thumbnail: "https://i3.ytimg.com/vi/7oADCYC6tl8/maxresdefault.jpg",
-    uploadDate: "21 août 2021",
-    artist: "Eldad Kids",
-  },
-  {
-    id: "3",
-    title: "Dorința mea",
-    youtubeId: "A2ZqU9XHbfU",
-    thumbnail: "https://i3.ytimg.com/vi/A2ZqU9XHbfU/maxresdefault.jpg",
-    uploadDate: "21 avr. 2023",
-    artist: "Eldad Kids",
-  },
-  {
-    id: "4",
-    title: "Poți să fii",
-    youtubeId: "9T7DM4UPwnU",
-    thumbnail: "https://i3.ytimg.com/vi/9T7DM4UPwnU/maxresdefault.jpg",
-    uploadDate: "24 mai 2022",
-    artist: "Eldad KIDS | Misiunea Eldad",
-  },
-  {
-    id: "6",
-    title: "Multe motive",
-    youtubeId: "t5QQNQTUWnc",
-    thumbnail: "https://i3.ytimg.com/vi/t5QQNQTUWnc/maxresdefault.jpg",
-    uploadDate: " 21 juin 2024",
-    artist: "Eldad KIDS | Misiunea Eldad",
-  },
-  {
-    id: "7",
-    title: "Dis de dimineață",
-    youtubeId: "7oADCYC6tl8",
-    thumbnail: "https://i3.ytimg.com/vi/7oADCYC6tl8/maxresdefault.jpg",
-    uploadDate: "21 août 2021",
-    artist: "Eldad Kids",
-  },
-  {
-    id: "8",
-    title: "Dorința mea",
-    youtubeId: "A2ZqU9XHbfU",
-    thumbnail: "https://i3.ytimg.com/vi/A2ZqU9XHbfU/maxresdefault.jpg",
-    uploadDate: "21 avr. 2023",
-    artist: "Eldad Kids",
-  },
-  {
-    id: "9",
-    title: "Poți să fii",
-    youtubeId: "9T7DM4UPwnU",
-    thumbnail: "https://i3.ytimg.com/vi/9T7DM4UPwnU/maxresdefault.jpg",
-    uploadDate: "24 mai 2022",
-    artist: "Eldad KIDS | Misiunea Eldad",
-  },
-  {
-    id: "10",
-    title: "Multe motive",
-    youtubeId: "t5QQNQTUWnc",
-    thumbnail: "https://i3.ytimg.com/vi/t5QQNQTUWnc/maxresdefault.jpg",
-    uploadDate: " 21 juin 2024",
-    artist: "Eldad KIDS | Misiunea Eldad",
-  },
-  {
-    id: "12",
-    title: "Dis de dimineață",
-    youtubeId: "7oADCYC6tl8",
-    thumbnail: "https://i3.ytimg.com/vi/7oADCYC6tl8/maxresdefault.jpg",
-    uploadDate: "21 août 2021",
-    artist: "Eldad Kids",
-  },
-  {
-    id: "13",
-    title: "Dorința mea",
-    youtubeId: "A2ZqU9XHbfU",
-    thumbnail: "https://i3.ytimg.com/vi/A2ZqU9XHbfU/maxresdefault.jpg",
-    uploadDate: "21 avr. 2023",
-    artist: "Eldad Kids",
-  },
-  {
-    id: "14",
-    title: "Poți să fii",
-    youtubeId: "9T7DM4UPwnU",
-    thumbnail: "https://i3.ytimg.com/vi/9T7DM4UPwnU/maxresdefault.jpg",
-    uploadDate: "24 mai 2022",
-    artist: "Eldad KIDS | Misiunea Eldad",
-  },
-  // Add more video data if needed
-];
+import CONFIG from "../../constants/config"; // Assuming CONFIG contains the BASE_URL
 
 const { width } = Dimensions.get("window"); // Get screen width
 
 const Kids = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currentVideo, setCurrentVideo] = useState(null);
-  const [playing, setPlaying] = useState(false);
+  const [videoData, setVideoData] = useState([]); // State to store fetched video data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
+  const [currentVideo, setCurrentVideo] = useState(null); // Currently selected video
+  const [playing, setPlaying] = useState(false); // Playing state for Youtube player
+
+  // Fetch data from API
+  const fetchData = async () => {
+    try {
+      setLoading(true); // Set loading state to true when fetching
+      const response = await fetch(
+        `${CONFIG.BASE_URL}/api/v1/media/findAll/KIDS`
+      );
+      if (!response.ok) throw new Error("Failed to fetch data");
+
+      const data = await response.json();
+
+      // Transform the data into a format that can be used for the video card
+      const transformedData = data.map((item) => ({
+        id: item.id,
+        title: item.ytTitle, // ytTitle as video title
+        youtubeId: item.ytId, // ytId as video ID for Youtube
+        thumbnail: `https://i3.ytimg.com/vi/${item.ytId}/maxresdefault.jpg`, // Use ytId to generate thumbnail URL
+        uploadDate: item.ytUploadDate, // ytUploadDate as the upload date
+        artist: "Eldad Kids", // Placeholder for artist
+      }));
+
+      // Set transformed data to state
+      setVideoData(transformedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      Alert.alert(
+        "Error",
+        "There was an error fetching the data. Please try again later."
+      );
+    } finally {
+      setLoading(false); // Set loading state to false when done
+    }
+  };
+
+  // Fetch data when the component mounts
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, padding: 10 }} className="bg-primary">
-      <View className="mx-4  space-y-1 mb-2">
+      <View className="mx-4 space-y-1 mb-2">
         <View className="flex justify-between items-center flex-row">
           <View>
             <Text className="text-2xl font-psemibold text-white">Kids</Text>
@@ -141,28 +82,35 @@ const Kids = () => {
           </View>
         </View>
       </View>
+
       <ScrollView>
         <View className="mx-4">
           <SearchInput />
         </View>
-        <View className="flex-row flex-wrap justify-between ">
-          {videoData.map((item) => (
-            <View key={item.id} className="w-[46%] mx-2 my-3">
-              <VideoCard
-                videoTitle={item.title}
-                videoArtist={item.artist}
-                videoThumbnail={item.thumbnail}
-                uploadDate={item.uploadDate}
-                onPress={() => {
-                  setCurrentVideo(item);
-                  setModalVisible(true);
-                  setPlaying(true);
-                }}
-              />
-            </View>
-          ))}
-        </View>
+
+        {loading ? (
+          <Text className="text-white text-center mt-10">Loading...</Text> // Show loading text
+        ) : (
+          <View className="flex-row flex-wrap justify-between">
+            {videoData.map((item) => (
+              <View key={item.id} className="w-[46%] mx-2 my-3">
+                <VideoCard
+                  videoTitle={item.title}
+                  videoArtist={item.artist}
+                  videoThumbnail={item.thumbnail}
+                  uploadDate={item.uploadDate}
+                  onPress={() => {
+                    setCurrentVideo(item);
+                    setModalVisible(true);
+                    setPlaying(true);
+                  }}
+                />
+              </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
+
       {/* Modal for Youtube Player */}
       <Modal
         animationType="slide"
